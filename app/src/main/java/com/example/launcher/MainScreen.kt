@@ -62,23 +62,25 @@ data class App(
     val icon: Drawable?
 )
 
-@Composable
-fun MainScreen() {
 
-
+private fun loadInstalledApps(context: Context) : List<App> {
     val intent = Intent(Intent.ACTION_MAIN)
     intent.addCategory(Intent.CATEGORY_LAUNCHER)
 
-    val flags = PackageManager.ResolveInfoFlags.of(
-        PackageManager.MATCH_ALL.toLong())
+    var activities: List<ResolveInfo>
 
-    val activities: List<ResolveInfo> =
-        LocalContext.current.packageManager.queryIntentActivities(intent, flags)
+    try {
+        PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_ALL.toLong())
+        activities = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL)
+    } catch (e: NoSuchMethodError) {
+        // PackageManager.ResolveInfoFlags.of() not available on older Android versions
+        activities = context.packageManager.queryIntentActivities(intent, 0)
+    }
 
 
-    val packageManager = LocalContext.current.packageManager
+    val packageManager = context.packageManager
 
-    val installedApps = activities.map { resolveInfo ->
+    return activities.map { resolveInfo ->
         App(
             name = resolveInfo.loadLabel(packageManager).toString(),
             packageName = resolveInfo.activityInfo.packageName,
@@ -86,15 +88,17 @@ fun MainScreen() {
         )
     }
 
+}
 
 
-    val app = installedApps[0]
+@Composable
+fun MainScreen() {
+
+    val installedApps = loadInstalledApps(LocalContext.current)
 
     val metrics = DisplayMetrics();
     val h = metrics.heightPixels / 11
     val w = metrics.widthPixels / 4
-
-
 
     LazyVerticalGrid (
         columns = GridCells.Adaptive(minSize = 128.dp)
