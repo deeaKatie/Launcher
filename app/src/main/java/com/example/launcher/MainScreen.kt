@@ -9,51 +9,39 @@ import androidx.compose.ui.Modifier
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.AdaptiveIconDrawable
-import android.graphics.drawable.AnimatedStateListDrawable
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ClipDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.DrawableContainer
-import android.graphics.drawable.DrawableWrapper
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.InsetDrawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.LevelListDrawable
-import android.graphics.drawable.NinePatchDrawable
-import android.graphics.drawable.PictureDrawable
-import android.graphics.drawable.RotateDrawable
-import android.graphics.drawable.ScaleDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.StateListDrawable
-import android.graphics.drawable.TransitionDrawable
-import android.graphics.drawable.VectorDrawable
 import android.util.DisplayMetrics
 import android.util.Log
-import android.widget.ImageView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
-
-
-import androidx.compose.ui.res.painterResource
-import androidx.core.content.ContextCompat
-import coil.compose.rememberImagePainter
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 data class App(
@@ -94,89 +82,68 @@ private fun loadInstalledApps(context: Context) : List<App> {
 @Composable
 fun MainScreen() {
 
-    val installedApps = loadInstalledApps(LocalContext.current)
+    val context = LocalContext.current
+    val installedApps = loadInstalledApps(context)
+    val packageManager = context.packageManager
 
     val metrics = DisplayMetrics();
-    val h = metrics.heightPixels / 11
-    val w = metrics.widthPixels / 4
+    val h = metrics.heightPixels
+    val w = metrics.widthPixels
 
-    LazyVerticalGrid (
-        columns = GridCells.Adaptive(minSize = 128.dp)
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val imageSize = screenWidth / 3
+    val smallImageSize = screenWidth / 5
+    val halfScreenSize = screenHeight / 2
+    val menuHeight = imageSize * 2
+
+
+    Log.d("HEIGHT VALUE", screenHeight.value.toString())
+    Log.d("WIDTH VALUE", screenWidth.value.toString())
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(installedApps) { app ->
+        DateWidget()
+        Clock()
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = imageSize),
+            modifier = Modifier
+                .height(menuHeight.value.dp)
+        ) {
+            items(installedApps) { app ->
 
-            val drawable = app.icon
+                val drawable = app.icon
 
-            val bitmap = Bitmap.createBitmap(
-                200,
-                200,
-                Bitmap.Config.ARGB_8888
-            )
-            //Text(text = drawable.intrinsicWidth.toString())
-            //Text(text = w.toString())
-            val canvas = Canvas(bitmap)
-            drawable?.setBounds(0, 0, canvas.width, canvas.height)
-            drawable?.draw(canvas)
-            val imageBitmap = bitmap.asImageBitmap()
-            Image(
-                bitmap = imageBitmap,
-                contentDescription = "Adaptive Icon"
-            )
+                val bitmap = Bitmap.createBitmap(
+                    imageSize.value.toInt(),
+                    imageSize.value.toInt(),
+                    Bitmap.Config.ARGB_8888
+                )
 
-
-//
-//            if (drawable == null) {
-//                Text(text = "null")
-//            }
-//            Log.d("TYPE", drawable.toString())
-//                when (drawable) {
-//                    is BitmapDrawable -> {
-//                        val bitmap = drawable.bitmap
-//                        val imageBitmap = bitmap.asImageBitmap()
-//                        Image(
-//                            bitmap = imageBitmap,
-//                            contentDescription = "App Icon"
-//
-//                        )
-////                        Text(text = "BitmapDrawable")
-//                    }
-////                    is VectorDrawable -> {
-////                        Text(text = "vec")
-////                        //val drawable = ContextCompat.getDrawable(LocalContext.current, drawable)
-////                        val bitmap = Bitmap.createBitmap(
-////                            drawable!!.intrinsicWidth,
-////                            drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
-////                        )
-////                        val canvas = Canvas(bitmap)
-////                        drawable.setBounds(0, 0, w, h)
-////                        drawable.draw(canvas)
-////                    }
-//                    is AdaptiveIconDrawable -> {
-////                        Text(text = "AdaptiveIconDrawable")
-//                        val bitmap = Bitmap.createBitmap(
-//                            200,
-//                            200,
-//                            Bitmap.Config.ARGB_8888
-//                        )
-//                        //Text(text = drawable.intrinsicWidth.toString())
-//                        //Text(text = w.toString())
-//                        val canvas = Canvas(bitmap)
-//                        drawable.setBounds(0, 0, canvas.width, canvas.height)
-//                        drawable.draw(canvas)
-//                        val imageBitmap = bitmap.asImageBitmap()
-//                        Image(
-//                            bitmap = imageBitmap,
-//                            contentDescription = "Adaptive Icon"
-//                        )
-//                    }
-//
-//                    else -> {
-//                        Text(text = app.name)
-//                    }
-//                }
-//
-//
-
+                val canvas = Canvas(bitmap)
+                drawable?.setBounds(0, 0, canvas.width, canvas.height)
+                drawable?.draw(canvas)
+                val imageBitmap = bitmap.asImageBitmap()
+                Image(
+                    bitmap = imageBitmap,
+                    contentDescription = "Adaptive Icon",
+                    modifier = Modifier
+                        .clickable(onClick = {
+                            val intent = packageManager.getLaunchIntentForPackage(app.packageName)
+                            if (intent != null) {
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(context, intent, null)
+                            }
+                        })
+                        .size(width = imageSize, height = imageSize)
+                )
+            }
         }
     }
 
@@ -184,4 +151,70 @@ fun MainScreen() {
 
 }
 
+@Composable
+fun Clock() {
+    val currentTime: MutableState<String> =  remember {
+        mutableStateOf("")
+    }
 
+    LaunchedEffect(true) {
+        while (true) {
+            currentTime.value = getCurrentTime()
+            delay(1000) // Update every second
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .height(100.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = currentTime.value,
+            fontSize = 36.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+    }
+}
+
+private fun getCurrentTime(): String {
+    val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+    val currentTime = Calendar.getInstance().time
+    return sdf.format(currentTime)
+}
+
+@Composable
+fun DateWidget() {
+    val currentDate: MutableState<String> = remember { mutableStateOf("") }
+
+    LaunchedEffect(true) {
+        while (true) {
+            currentDate.value = getCurrentDate()
+            delay(60000) // Update every minute
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .height(50.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = currentDate.value,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.Black
+        )
+    }
+}
+
+private fun getCurrentDate(): String {
+    val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    val currentDate = Calendar.getInstance().time
+    return sdf.format(currentDate)
+}
