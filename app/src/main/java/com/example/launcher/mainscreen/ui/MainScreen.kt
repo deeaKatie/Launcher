@@ -32,7 +32,7 @@ import com.example.launcher.widgets.ClockWidget
 import com.example.launcher.widgets.DateWidget
 
 @Composable
-fun MainScreen() {
+fun MainScreen(onEditClick: () -> Unit) {
     Log.d("MainScreen", "recompose")
 
     val context = LocalContext.current
@@ -68,7 +68,7 @@ fun MainScreen() {
                 horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
-                    onClick = { /*TODO*/ }
+                    onClick = onEditClick
                 ) {
                     Text(
                         text = "EDIT",
