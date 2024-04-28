@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.launcher.mainscreen.ui.MainScreen
+import com.example.launcher.optionsscreen.ui.AppsListOptions
 import com.example.launcher.optionsscreen.ui.OptionsScreen
 
 
@@ -35,10 +36,14 @@ fun Navigator(activity:Activity) {
             OptionsScreen(onSaveClick = {
                 Log.d("Navigator", "navigate to $launcher_Route")
                 navController.navigate(launcher_Route)
-            })
+            },
+                onAppsListEdit = {
+                    Log.d("Navigator", "navigate to $lo_apps_list_Route")
+                    navController.navigate(lo_apps_list_Route)
+                })
         }
         composable(lo_apps_list_Route) {
-            OptionsScreen(onSaveClick = {
+            AppsListOptions(onSaveClick = {
                 Log.d("Navigator", "navigate to $launcherOptions_Route")
                 navController.navigate(launcherOptions_Route)
             })

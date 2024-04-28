@@ -42,7 +42,8 @@ class AppsViewModel(context : Context) : ViewModel() {
                 App(
                     name = resolveInfo.loadLabel(packageManager).toString(),
                     packageName = resolveInfo.activityInfo.packageName,
-                    icon = resolveInfo.loadIcon(packageManager)
+                    icon = resolveInfo.loadIcon(packageManager),
+                    checked = true
                 )
             })
         }
