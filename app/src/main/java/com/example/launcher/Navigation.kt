@@ -1,5 +1,6 @@
 package com.example.launcher
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -9,27 +10,37 @@ import com.example.launcher.mainscreen.ui.MainScreen
 import com.example.launcher.optionsscreen.ui.OptionsScreen
 
 
-val launcherRoute = "launcher"
-val editLauncherRoute = "edit-launcher"
+val launcher_Route = "launcher"
+val launcherOptions_Route = "launcher-options"
+val lo_apps_list_Route = "launcher-options/apps-list"
 
 @Composable
-fun Navigator() {
+fun Navigator(activity:Activity) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = launcherRoute
+        startDestination = launcher_Route
     ) {
-        composable(launcherRoute) {
-            Log.d("Navigator", "navigate to $launcherRoute")
+        composable(launcher_Route) {
+            Log.d("Navigator", "navigate to $launcher_Route")
             MainScreen(onEditClick = {
-                Log.d("Navigator", "navigate to $editLauncherRoute")
-                navController.navigate(editLauncherRoute)
+                Log.d("Navigator", "navigate to $launcherOptions_Route")
+                navController.navigate(launcherOptions_Route)
+            },
+                activity = activity)
+        }
+
+        /* ************ LAUNCHER OPTIONS ************ */
+        composable(launcherOptions_Route) {
+            OptionsScreen(onSaveClick = {
+                Log.d("Navigator", "navigate to $launcher_Route")
+                navController.navigate(launcher_Route)
             })
         }
-        composable(editLauncherRoute) {
+        composable(lo_apps_list_Route) {
             OptionsScreen(onSaveClick = {
-                Log.d("Navigator", "navigate to $launcherRoute")
-                navController.navigate(launcherRoute)
+                Log.d("Navigator", "navigate to $launcherOptions_Route")
+                navController.navigate(launcherOptions_Route)
             })
         }
     }

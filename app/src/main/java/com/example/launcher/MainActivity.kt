@@ -10,6 +10,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.launcher.mainscreen.ui.MainScreen
 import com.example.launcher.ui.theme.LauncherTheme
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
+import com.google.firebase.database.database
 
 
 class MainActivity : ComponentActivity() {
@@ -24,8 +27,11 @@ class MainActivity : ComponentActivity() {
                 )
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
         // Hide both the status bar and the navigation bar initially
         hideSystemBars()
@@ -41,11 +47,13 @@ class MainActivity : ComponentActivity() {
         // SET THE CONTENT
         setContent {
             Log.d("MainActivity", "onCreate")
+            Firebase.analytics.logEvent("START", null)
             LauncherTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Navigator()
+
+                    Navigator(this)
                 }
             }
         }

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "896653310936",
+    "firebase_url": "https://launcher-bdc66-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "launcher-bdc66",
+    "storage_bucket": "launcher-bdc66.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896653310936:android:b8794d170486ebca4210ad",
+        "android_client_info": {
+          "package_name": "com.example.launcher"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0t1OyXQQJ-EMFYRbEf7rxK2im_ZKsI0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
