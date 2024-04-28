@@ -42,7 +42,7 @@ fun OptionsScreen(onSaveClick: () -> Unit, onAppsListEdit: () -> Unit) {
                 onClick = onSaveClick
             ) {
                 Text(
-                    text = "SAVE",
+                    text = "BACK",
                     color = Color.Gray
                 )
             }
